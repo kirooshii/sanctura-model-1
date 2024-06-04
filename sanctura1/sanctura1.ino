@@ -1,20 +1,35 @@
-// Define the GPIO pins for motor control
-const int motorPin1 = 23;
-const int motorPin2 = 22;
+// Definir pines del Arduino
+const int enablePin = 9; // Pin de habilitación del motor
+const int in1Pin = 7;    // Pin de entrada 1 del L298N
+const int in2Pin = 8;    // Pin de entrada 2 del L298N
 
 void setup() {
-  // Initialize the motor control pins as outputs
-  pinMode(motorPin1, OUTPUT);
-  pinMode(motorPin2, OUTPUT);
+  // Configurar los pines como salidas
+  pinMode(enablePin, OUTPUT);
+  pinMode(in1Pin, OUTPUT);
+  pinMode(in2Pin, OUTPUT);
 }
 
 void loop() {
-  digitalWrite(motorPin1, HIGH);
-  digitalWrite(motorPin2, HIGH);
-  delay(1000); // Run for 1 second
+  // Hacer girar el motor en una dirección
+  digitalWrite(in1Pin, HIGH);
+  digitalWrite(in2Pin, LOW);
+  analogWrite(enablePin, 255); // Velocidad máxima
+  delay(2000); // Girar durante 2 segundos
 
-  // Stop the motor
-  digitalWrite(motorPin1, LOW);
-  digitalWrite(motorPin2, LOW);
-  delay(500); // Pause for 0.5 second
+  // Detener el motor
+  analogWrite(enablePin, 0);
+  delay(1000); // Esperar 1 segundo
+
+  // Hacer girar el motor en la otra dirección
+  digitalWrite(in1Pin, LOW);
+  digitalWrite(in2Pin, HIGH);
+  analogWrite(enablePin, 255); // Velocidad máxima
+  delay(2000); // Girar durante 2 segundos
+
+  // Detener el motor
+  analogWrite(enablePin, 0);
+  delay(1000); // Esperar 1 segundo
 }
+
+
