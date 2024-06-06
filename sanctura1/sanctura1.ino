@@ -45,12 +45,12 @@ void loop() {
   delay(2000); // work for 2 seconds
 
   // stop motor1
-  analogWrite(motor2_enablePin, 0);
+  analogWrite(motor1_enablePin, 0);
   delay(1000); // wait 1 second
 
   // motor2 starts working in another direction
-  digitalWrite(motor2_in1Pin, HIGH);
-  digitalWrite(motor2_in2Pin, LOW);
+  digitalWrite(motor2_in1Pin, LOW);
+  digitalWrite(motor2_in2Pin, HIGH);
   analogWrite(motor2_enablePin, 255); // full speed
   delay(2000); // work for 2 seconds
 
