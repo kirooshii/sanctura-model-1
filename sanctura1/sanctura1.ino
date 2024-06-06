@@ -1,35 +1,62 @@
-// Definir pines del Arduino
-const int enablePin = 9; // Pin de habilitación del motor
-const int in1Pin = 7;    // Pin de entrada 1 del L298N
-const int in2Pin = 8;    // Pin de entrada 2 del L298N
+// pins definition
+const int motor1_enablePin = 9; // pin to enable the motor1
+const int motor1_in1Pin = 7;    // pin for entrance 1 - L298N
+const int motor1_in2Pin = 8;    // pin for entrance 2 - L298N
+
+const int motor2_enablePin = 12; // pin to enable the motor2
+const int motor2_in1Pin = 10; // pin for entrance 1 - L298N
+const int motor2_in2Pin = 11; // pin for entrance 2 - L298N
 
 void setup() {
-  // Configurar los pines como salidas
-  pinMode(enablePin, OUTPUT);
-  pinMode(in1Pin, OUTPUT);
-  pinMode(in2Pin, OUTPUT);
+  // configure the pins for output
+  pinMode(motor1_enablePin, OUTPUT);
+  pinMode(motor1_in1Pin, OUTPUT);
+  pinMode(motor1_in2Pin, OUTPUT);
+  pinMode(motor2_enablePin, OUTPUT);
+  pinMode(motor2_in1Pin, OUTPUT);
+  pinMode(motor2_in2Pin, OUTPUT);
 }
 
 void loop() {
-  // Hacer girar el motor en una dirección
-  digitalWrite(in1Pin, HIGH);
-  digitalWrite(in2Pin, LOW);
-  analogWrite(enablePin, 255); // Velocidad máxima
-  delay(2000); // Girar durante 2 segundos
+  // motor1 starts working in one direction
+  digitalWrite(motor1_in1Pin, HIGH);
+  digitalWrite(motor1_in2Pin, LOW);
+  analogWrite(motor1_enablePin, 255); // full speed
+  delay(2000); // work for 2 seconds
 
-  // Detener el motor
-  analogWrite(enablePin, 0);
-  delay(1000); // Esperar 1 segundo
+  // stop motor1
+  analogWrite(motor1_enablePin, 0);
+  delay(1000); // wait 1 second
 
-  // Hacer girar el motor en la otra dirección
-  digitalWrite(in1Pin, LOW);
-  digitalWrite(in2Pin, HIGH);
-  analogWrite(enablePin, 255); // Velocidad máxima
-  delay(2000); // Girar durante 2 segundos
+  // motor2 starts working in one direction
+  digitalWrite(motor2_in1Pin, HIGH);
+  digitalWrite(motor2_in2Pin, LOW);
+  analogWrite(motor2_enablePin, 255); // full speed
+  delay(2000); // work for 2 seconds
 
-  // Detener el motor
-  analogWrite(enablePin, 0);
-  delay(1000); // Esperar 1 segundo
+  // stop motor2
+  analogWrite(motor2_enablePin, 0);
+  delay(1000); // wait 1 second
+
+  // motor1 starts working in another direction
+  digitalWrite(motor1_in1Pin, LOW);
+  digitalWrite(motor1_in2Pin, HIGH);
+  analogWrite(motor1_enablePin, 255); // full speed
+  delay(2000); // work for 2 seconds
+
+  // stop motor1
+  analogWrite(motor2_enablePin, 0);
+  delay(1000); // wait 1 second
+
+  // motor2 starts working in another direction
+  digitalWrite(motor2_in1Pin, HIGH);
+  digitalWrite(motor2_in2Pin, LOW);
+  analogWrite(motor2_enablePin, 255); // full speed
+  delay(2000); // work for 2 seconds
+
+  // stop motor2
+  analogWrite(motor2_enablePin, 0);
+  delay(1000); // wait 1 second
 }
 
 
