@@ -1,34 +1,26 @@
-/*
-  File: sanctura1.ino
-  Project: sensor test
-  Author: kiroshi
-*/
+// Pin definitions
+#define motor1_enablePin 11  // Pin to enable motor1
+#define motor1_in1Pin 9      // Pin for entrance 1 - L298N
+#define motor1_in2Pin 10     // Pin for entrance 2 - L298N
+#define motor2_enablePin 8   // Pin to enable motor2
+#define motor2_in1Pin 12     // Pin for entrance 1 - L298N
+#define motor2_in2Pin 13     // Pin for entrance 2 - L298N
 
-// ----------------------------------------------------------------------------------------------------------------------
-// Pins definition
+// #define hw006Pin A0          // Pin connected to the OUT pin of HW006
 
-// motors
-#define motor1_enablePin 5  // Pin to enable the motor1
-#define motor1_in1Pin 7     // Pin for entrance 1 - L298N
-#define motor1_in2Pin 6     // Pin for entrance 2 - L298N
-#define motor2_enablePin 8  // Pin to enable the motor2
-#define motor2_in1Pin 9     // Pin for entrance 1 - L298N
-#define motor2_in2Pin 10    // Pin for entrance 2 - L298N
-
-// infrared sensor
-#define hw006Pin A0         // Pin connected to the OUT pin of HW006
-
-// ultrasonic sensors
-#define front_trigPin 3     // Pin for the trigger of the ultrasonic sensor
-#define front_echoPin 4     // Pin for the echo of the ultrasonic sensor
-#define left_trigPin 2     // Pin for the trigger of the ultrasonic sensor
-#define left_echoPin 11      // Pin for the echo of the ultrasonic sensor
-#define right_trigPin 12    // Pin for the trigger of the ultrasonic sensor
-#define right_echoPin 13    // Pin for the echo of the ultrasonic sensor
+#define front_trigPin 2      // Pin for the trigger of the ultrasonic sensor
+#define front_echoPin 3     // Pin for the echo of the ultrasonic sensor
+#define left_trigPin 4       // Pin for the trigger of the ultrasonic sensor
+#define left_echoPin 5       // Pin for the echo of the ultrasonic sensor
+#define right_trigPin 6      // Pin for the trigger of the ultrasonic sensor
+#define right_echoPin 7      // Pin for the echo of the ultrasonic sensor
 
 // Global variables
 long duration;
-int distance;
+int front_distance;
+int left_distance;
+int right_distance;
+// int buttonState = HIGH; // The initial state of the button
 
 void setup() {
   // Configure the pins for output
@@ -42,7 +34,7 @@ void setup() {
   pinMode(motor2_in2Pin, OUTPUT);
 
   // Configure the pins for the HW006 sensor
-  pinMode(hw006Pin, INPUT);
+  // pinMode(hw006Pin, INPUT);
 
   // Configure the pins for the ultrasonic sensors
   pinMode(front_trigPin, OUTPUT);
@@ -54,60 +46,75 @@ void setup() {
 
   // Initialize serial communication
   Serial.begin(9600);
+
+  /*
+  // Wait for the button press to start
+  while(buttonState == HIGH) {
+    buttonState = digitalRead(hw006Pin); // Keep checking to see if the HW006 sensor is triggered
+  }
+  delay(5000); // Wait 5 seconds before starting
+  */
 }
 
 void loop() {
   // Continuously measure and output distances
-  //measureAndPrintDistance(front_trigPin, front_echoPin, "Front");
-  //measureAndPrintDistance(left_trigPin, left_echoPin, "Left");
-  //measureAndPrintDistance(right_trigPin, right_echoPin, "Right");
-  checkHW006();
+  front_distance = measureDistance(front_trigPin, front_echoPin);
+  left_distance = measureDistance(left_trigPin, left_echoPin);
+  right_distance = measureDistance(right_trigPin, right_echoPin);
+
+  // Print distances to the Serial Monitor
+  Serial.print("Front Sensor Distance: ");
+  Serial.print(front_distance);
+  Serial.println(" cm");
+  Serial.print("Left Sensor Distance: ");
+  Serial.print(left_distance);
+  Serial.println(" cm");
+  Serial.print("Right Sensor Distance: ");
+  Serial.print(right_distance);
+  Serial.println(" cm");
+  
+  // Target in front
+  if (front_distance < 20 && front_distance > 0) { // Adjust the threshold as needed
+    motors(100, 100); // Move forward if an object is detected within 20 cm
+  }
+  // No target in front, check left and right sensors
+  else if (left_distance < 20 && right_distance < 20) { // Both sensors detect something
+    motors(100, 100); // Move forward
+  }
+  else if (left_distance < 20) {  // Only left sensor detects something
+    motors(-100, 100);  // Turn left
+  }
+  else if (right_distance < 20) {  // Only right sensor detects something
+    motors(100, -100);  // Turn right
+  }
+  else { // No objects detected by any sensor
+    motors(100, 100); // Move forward
+  }
+
+  delay(10); // A slight delay at the end of the code for stability, prevents jittery movement
 }
 
-// ----------------------------------------------------------------------------------------------------------------------
-// Functions
-// ----------------------------------------------------------------------------------------------------------------------
-
-void measureAndPrintDistance(int trigPin, int echoPin, const char* sensorName) {
+// Function to measure distance using ultrasonic sensor
+int measureDistance(int trigPin, int echoPin) {
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
   digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
   digitalWrite(trigPin, LOW);
 
-  // Reads the echoPin, returns the sound wave travel time in microseconds
   duration = pulseIn(echoPin, HIGH);
-
-  // Calculating the distance
-  distance = duration * 0.034 / 2;
-
-  // Print the distance to the Serial Monitor
-  Serial.print(sensorName);
-  Serial.print(" Sensor Distance: ");
-  Serial.print(distance);
-  Serial.println(" cm");
+  int distance = duration * 0.034 / 2;
+  return distance;
 }
 
-void checkHW006() {
-  // Read the state of HW006 sensor
-  int hw006State = digitalRead(hw006Pin);
+// Function to control the motors
+void motors(int l, int r) {
+  // Motor control using PWM values (0-255 for analogWrite)
+  analogWrite(motor1_enablePin, abs(l));
+  digitalWrite(motor1_in1Pin, l > 0);
+  digitalWrite(motor1_in2Pin, l < 0);
 
-  // Print the state to the Serial Monitor
-  if (hw006State == HIGH) {
-    Serial.println("HW006 sensor: LED is working");
-    // Motor1 starts working in one direction
-    digitalWrite(motor1_in1Pin, HIGH);
-    digitalWrite(motor1_in2Pin, LOW);
-    analogWrite(motor1_enablePin, 255); // Full speed
-    // Motor1 starts working in one direction
-    digitalWrite(motor2_in1Pin, HIGH);
-    digitalWrite(motor2_in2Pin, LOW);
-    analogWrite(motor2_enablePin, 255); // Full speed
-
-  } else {
-    Serial.println("HW006 sensor: LED is not working");
-    // Stop the motor if conditions are not met
-    digitalWrite(motor1_enablePin, LOW);
-    digitalWrite(motor2_enablePin, LOW);
-  }
+  analogWrite(motor2_enablePin, abs(r));
+  digitalWrite(motor2_in1Pin, r > 0);
+  digitalWrite(motor2_in2Pin, r < 0);
 }

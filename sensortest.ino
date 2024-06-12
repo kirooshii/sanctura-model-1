@@ -1,5 +1,5 @@
 /*
-  File: sanctura1.ino
+  File: sensortest.ino
   Project: sensor test
   Author: kiroshi
 */
