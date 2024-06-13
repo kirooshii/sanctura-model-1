@@ -1,3 +1,10 @@
+/*
+  File: sanctura1.ino
+  Project: fight test 1
+  Author: kiroshi
+*/
+
+// ----------------------------------------------------------------------------------------------------------------------
 // Pin definitions
 #define motor1_enablePin 11  // Pin to enable motor1
 #define motor1_in1Pin 9      // Pin for entrance 1 - L298N
