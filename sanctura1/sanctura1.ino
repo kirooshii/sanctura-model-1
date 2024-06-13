@@ -6,8 +6,6 @@
 #define motor2_in1Pin 12     // Pin for entrance 1 - L298N
 #define motor2_in2Pin 13     // Pin for entrance 2 - L298N
 
-// #define hw006Pin A0          // Pin connected to the OUT pin of HW006
-
 #define front_trigPin 2      // Pin for the trigger of the ultrasonic sensor
 #define front_echoPin 3     // Pin for the echo of the ultrasonic sensor
 #define left_trigPin 4       // Pin for the trigger of the ultrasonic sensor
@@ -20,7 +18,6 @@ long duration;
 int front_distance;
 int left_distance;
 int right_distance;
-// int buttonState = HIGH; // The initial state of the button
 
 void setup() {
   // Configure the pins for output
@@ -33,9 +30,6 @@ void setup() {
   pinMode(motor2_in1Pin, OUTPUT);
   pinMode(motor2_in2Pin, OUTPUT);
 
-  // Configure the pins for the HW006 sensor
-  // pinMode(hw006Pin, INPUT);
-
   // Configure the pins for the ultrasonic sensors
   pinMode(front_trigPin, OUTPUT);
   pinMode(front_echoPin, INPUT);
@@ -46,14 +40,6 @@ void setup() {
 
   // Initialize serial communication
   Serial.begin(9600);
-
-  /*
-  // Wait for the button press to start
-  while(buttonState == HIGH) {
-    buttonState = digitalRead(hw006Pin); // Keep checking to see if the HW006 sensor is triggered
-  }
-  delay(5000); // Wait 5 seconds before starting
-  */
 }
 
 void loop() {
