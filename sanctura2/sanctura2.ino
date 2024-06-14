@@ -75,15 +75,9 @@ Serial.println(" cm");
   if (front_distance < opponent_threshold && front_distance > 0) {
     // Opponent detected in front
     motors(255, -255); // Charge forward
-  } else if (left_distance < edge_threshold) {
-    // Edge detected on the left
-    motors(255, 255); // Turn right
-  } else if (right_distance < edge_threshold) {
-    // Edge detected on the right
-    motors(255, 255); // Turn right
   } else if (left_distance < opponent_threshold && left_distance > 0) {
     // Opponent detected on the left
-    motors(255, 255); // Turn right
+    motors(-255, -255); // Turn right
   } else if (right_distance < opponent_threshold && right_distance > 0) {
     // Opponent detected on the right
     motors(255, 255); // Turn right
