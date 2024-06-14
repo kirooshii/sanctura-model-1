@@ -71,27 +71,14 @@ Serial.print(right_distance);
 Serial.println(" cm");
 
 
-// Main decision-making logic
-  if (front_distance < opponent_threshold && front_distance > 0) {
-    // Opponent detected in front
-    motors(255, -255); // Charge forward
-  } else if (left_distance < edge_threshold) {
-    // Edge detected on the left
-    motors(255, 255); // Turn right
-  } else if (right_distance < edge_threshold) {
-    // Edge detected on the right
-    motors(255, 255); // Turn right
-  } else if (left_distance < opponent_threshold && left_distance > 0) {
-    // Opponent detected on the left
-    motors(255, 255); // Turn right
-  } else if (right_distance < opponent_threshold && right_distance > 0) {
-    // Opponent detected on the right
-    motors(255, 255); // Turn right
-  } else {
-    // No opponent or edge detected
-    motors(0, 0); // Stop to reevaluate
-    motors(255, 255); // Turn right
-  }
+motors(255, -255); // Charge forward
+delay(5000); // Charge forward for 1 second
+motors(255, 255); // Pivot right
+delay(5000);
+motors(-255, -255); // Pivot left
+delay(5000);
+motors(-255, 255); // Reverse
+delay(5000);
 
 delay(10); // A slight delay at the end of the code for stability, prevents jittery movement
 }
@@ -119,4 +106,12 @@ digitalWrite(motor1_in2Pin, l < 0);
 analogWrite(motor2_enablePin, abs(r));
 digitalWrite(motor2_in1Pin, r > 0);
 digitalWrite(motor2_in2Pin, r < 0);
+}
+
+// Function to search for the opponent
+void search_for_opponent() {
+// Rotate to search for the opponent
+motors(255, -255);
+delay(500); // Rotate for half a second
+motors(0, 0); // Stop
 }
